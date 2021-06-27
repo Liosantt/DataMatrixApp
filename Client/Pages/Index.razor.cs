@@ -76,7 +76,7 @@ namespace Scan.Client.Pages
 
             string serialNo = tempUserInput.Split(';')[0];
             string material = tempUserInput.Split(';')[0];
-            // ask patryk which way best
+            // ask patryk which way best TODO
             // string[] uInputs = tempUserInput.Split(';');
             // serialNo = uInputs[0];
             // material = uInputs[1];
