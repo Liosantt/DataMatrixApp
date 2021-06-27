@@ -1,17 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
-
 using Scan.Server.Model;
 using Microsoft.EntityFrameworkCore;
 
 using Scan.Shared;
-using Scan.Server.Services;
 
 namespace Scan.Server
 {
@@ -35,10 +30,9 @@ namespace Scan.Server
 			services.AddAntDesign();
 
 			services.AddSingleton<IFileUtil, SFileUtil>();
-			services.AddScoped<ICooisService, SCooisService>();
-
+			
 			services.AddDbContext<Connectors1Context>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("Connectors1"))
+				options.UseSqlite(Configuration.GetConnectionString("LocalDB"))
 			);
 		}
 
