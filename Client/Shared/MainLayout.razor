@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+<Layout>
+    <Header Class="header">
+        <span class="logo-Scan"><img src="res/Scan-logo.svg" alt="Scan Logo" /></span>
+        <span class="logo-se"><img src="res/SE_Logo_White_RGB.svg"  alt="Siemens Energy Logo" /></span>
+    </Header>
+    <Content Class="content">
+        @Body
+    </Content>
+    <Footer Class="footer">
+        <span>
+            Siemens Energy is a registered trademark licensed by Siemens AG.
+            <br />
+            © Siemens Energy, @DateTime.Today.Year
+            <br />
+            V2.3
+        </span>
+    </Footer>
+</Layout>

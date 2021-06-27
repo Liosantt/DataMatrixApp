@@ -1,0 +1,92 @@
+﻿.logo-Scan {
+    width: 120px;
+    max-height: 50px;
+    float: left;
+}
+
+.logo-se {
+    width: 120px;
+    max-height: 50px;
+    float: right;
+}
+
+.header {
+
+}
+
+.content {
+    padding: 15px 50px;
+    min-height: 81.6vh!important;
+}
+
+.footer {
+    min-height:10vh;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.picked {
+    background-color: #bae1ff !important;
+}
+
+.hasData {
+    background-color: #641e8c !important;
+    color: white !important;
+}
+
+.hasData:hover {
+    background: #641e8c !important;
+}
+
+tr.hidden {
+    background-color: #CFCFC4 !important;
+}
+tr.hidden:hover td {
+    background-color: #CFCFC4 !important;
+}
+tr.hidden td.ant-table-column-sort {
+    background-color: #CFCFC4 !important;
+}
+tr.hidden td.ant-table-column-sort:hover {
+    background-color: #CFCFC4 !important;
+}
+
+tr.picked td.ant-table-column-sort {
+    background: #bae1ff !important;
+}
+tr.picked td.ant-table-column-sort:hover {
+    background: #bae1ff !important;
+}
+
+tr.picked:hover td {
+    background: #bae1ff !important;
+}
+
+td.ant-table-column-sort {
+    background: white !important;
+}
+td.ant-table-column-sort:hover {
+    background: #fafafa !important;
+}
+
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}

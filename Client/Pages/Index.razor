@@ -1,0 +1,149 @@
+@page "/"
+@using Scan.Shared;
+@inject IJSRuntime js
+@inject NavigationManager navMan
+
+<AntDesign.Pro.Layout.GridContent>
+    <Row>
+        <AntDesign.Col Span="24">
+            <Card>
+                <Space>
+                    <SpaceItem>
+                        <Text>Enter Production Order Number</Text>
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Input @bind-Value="productionOrder" Min="0" Max="int.MaxValue"  AllowClear="true" TValue="int?" />
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Button Type="@ButtonType.Primary" OnClick="SubmitProdOrder" Disabled="loadingPO">Submit</Button>
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Button Type="@ButtonType.Default" OnClick="SaveListToDisk">Save</Button>
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Upload Action="@((navMan.ToAbsoluteUri("api/File")).ToString())"
+                                Name="files" Accept="csv"
+                                OnSingleCompleted="OnLoadFile" ShowUploadList="false">
+                            <Button Icon="upload">
+                                <span>Load</span>
+                            </Button>
+                        </Upload>
+                    </SpaceItem>
+                    <SpaceItem>
+                        @if (loadingPO)
+                        {
+                            <Icon Type="loading" Theme="outline" />
+                        }
+                    </SpaceItem>
+                </Space>
+
+            </Card>
+        </AntDesign.Col>
+    </Row>
+    <br />
+    <Row>
+        <AntDesign.Col Span="24">
+            <Card Title="Remaining Items:">
+                <Space>
+                    <SpaceItem>
+                        @if (hiddenItemsVisibleInMainList)
+                        {
+                            <Button Type="@ButtonType.Default" OnClick="HideAllComponents">
+                                Hide Hidden
+                            </Button>
+                        }
+                        else
+                        {
+                            <Button Type="@ButtonType.Default" OnClick="UnhideAllComponents">
+                                Show Hidden
+                            </Button>
+                        }
+                    </SpaceItem>
+                    <SpaceItem>
+                        @if (collectedItemsVisibleInMainList)
+                        {
+                            <Button Type="@ButtonType.Default" OnClick="HideCollectedItems">
+                                Hide Collected
+                            </Button>
+                        }
+                        else
+                        {
+                            <Button Type="@ButtonType.Default" OnClick="ShowCollectedItems">
+                                Show Collected
+                            </Button>
+                        }
+                    </SpaceItem>
+                </Space>
+                <Space Style="float:right">
+                    <SpaceItem>
+                        <span>
+                            Collected @(PickDataCollected.Count + (PickDataSorted.Where(e => e.Collected)).Count()) out of @(totalItems-PickDataHidden.Count - PickDataSorted.Where(e=>e.Hidden).Count()) 
+                        </span>
+                    </SpaceItem>
+                </Space>
+                <br />
+                <Table TItem="CooisComponent" DataSource="PickDataSorted"
+                        PageSize="50" Size="@TableSize.Small"
+                        RowClassName="@((e) => (e.Data.Collected ? "picked" : "") + " " + (e.Data.Hidden ? "hidden" : ""))"
+                        @ref="pickTable">
+                    <Column @bind-Field="context.Material" Title="Material" Sortable>
+                        @context.Material
+                    </Column>
+                    <Column @bind-Field="context.RequirementQty" Title="Required Qty" Sortable>
+                        @Math.Round(context.RequirementQty, 2)
+                    </Column>
+                    <Column @bind-Field="context.BaseUoM" Title="Base UoM" Sortable>
+                        @context.BaseUoM
+                    </Column>
+                    <Column @bind-Field="context.Batch" Title="Batch" Sortable>
+                        @if (editingComponentID == context.ComponentId)
+                        {
+                            <Input Type="text" @bind-Value="context.Batch" OnBlur="finishEditingBatch" AutoFocus />
+                        }
+                        else
+                        {
+                            <div class="editable-cell-value-wrap" style="padding-right:24px" @onclick="()=>startEditingBatch(context.ComponentId)">
+                                @context.Batch
+                            </div>
+                        }
+                    </Column> 
+                    <Column @bind-Field="context.StorageLocation" Title="Storage Location" Sortable>
+                        @findStorLoc(context.StorageLocation)
+                    </Column>
+                    <ActionColumn Width="1" Title="Collected">
+                        @if (context.Collected)
+                        {
+                            <Button Style="display:block;margin:auto;" Shape="circle" Icon="@IconType.Outline.Minus" OnClick="() => UncollectComponent(context)" />
+                        }
+                        else
+                        {
+                            <Button Style="display:block;margin:auto;" Shape="circle" Icon="@IconType.Outline.Plus" OnClick="() => CollectComponent(context)" />
+                        }
+                    </ActionColumn>
+                    <ActionColumn Width="1" Title="Hide">
+                        @if (context.Hidden)
+                        {
+                            <Button Style="display:block;margin:auto;" Shape="circle" Icon="eye" OnClick="() => UnhideComponent(context)" />
+                        }
+                        else
+                        {
+                            <Button Style="display:block;margin:auto;" Shape="circle" Icon="eye-invisible" OnClick="() => HideComponent(context)" />
+                        }
+                    </ActionColumn>
+                    <ActionColumn Width="1" Title="Comment">
+                        <Button Style="display:block;margin:auto;" Class="@(context.Comment != null && context.Comment.Length > 0 ? "hasData":"")" 
+                                Shape="circle" Icon="comment" OnClick="() => ShowCommentsModal(context)" />
+                    </ActionColumn>
+                </Table>
+            </Card>
+        </AntDesign.Col>
+    </Row>
+</AntDesign.Pro.Layout.GridContent>
+
+<!-- Could make this a ModalService with Templating, but this is a very simple form. -->
+<Modal Title="Comments"
+       Visible="commentsModalVisible"
+       OnOk="SaveCommentsToObject"
+       OnCancel="HideCommentsModal">
+    <TextArea Placeholder="Comment" MinRows="3" MaxRows="6" @bind-Value="enteredCommentText" />
+</Modal>
