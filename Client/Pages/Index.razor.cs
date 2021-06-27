@@ -74,6 +74,13 @@ namespace Scan.Client.Pages
                 return;
             }
 
+            string serialNo = tempUserInput.Split(';')[0];
+            string material = tempUserInput.Split(';')[0];
+            // ask patryk which way best
+            // string[] uInputs = tempUserInput.Split(';');
+            // serialNo = uInputs[0];
+            // material = uInputs[1];
+            
             loadingPO = true;
             StateHasChanged();
         }
