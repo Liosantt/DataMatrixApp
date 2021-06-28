@@ -74,12 +74,11 @@ namespace Scan.Client.Pages
                 return;
             }
 
-            string serialNo = tempUserInput.Split(';')[0];
-            string material = tempUserInput.Split(';')[0];
-            // ask patryk which way best TODO
-            // string[] uInputs = tempUserInput.Split(';');
-            // serialNo = uInputs[0];
-            // material = uInputs[1];
+            int index = tempUserInput.IndexOf(';');
+            string sn = tempUserInput.Substring(3, index-3);
+            string mat = tempUserInput.Substring(index + 5, tempUserInput.Length - index - 5);
+            
+            
             
             loadingPO = true;
             StateHasChanged();
