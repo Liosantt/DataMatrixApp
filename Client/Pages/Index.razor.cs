@@ -76,7 +76,7 @@ namespace Scan.Client.Pages
 
             int index = tempUserInput.IndexOf(';');
             string sn = tempUserInput.Substring(3, index-3);
-            string mat = tempUserInput.Substring(index + 5, tempUserInput.Length - index - 5);
+            string mat = tempUserInput.Substring(index + 5, tempUserInput.Length - (index - 5));
             
             
             
