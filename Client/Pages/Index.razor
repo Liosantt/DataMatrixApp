@@ -17,11 +17,21 @@
                         </SpaceItem>
                     }
                 </Space>
-
             </Card>
         </AntDesign.Col>
     </Row>
     <br />
+    <Row>
+        <AntDesign.Col Span="24">
+            <Card Title="Components breakdown">
+                <Table TItem="CooisComponent" DataSource="dataInTag.Components" Size="TableSize.Small" PageSize="50">
+                    <Column @bind-Field="context.Material" Title="Material">
+                        @context.Material
+                    </Column>
+                </Table>
+            </Card>
+        </AntDesign.Col>
+    </Row>
     @if (dataInTag != null)
     {
         <Row>
