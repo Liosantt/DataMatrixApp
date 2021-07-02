@@ -7,18 +7,18 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using AntDesign;
 using AntDesign.TableModels;
-
+using Grpc.Core;
 using Microsoft.AspNetCore.Components;
+using Tag = Scan.Shared.Tag;
 
 namespace Scan.Client.Pages
 {
     public partial class Index
     {
-        #region Services
-        [Inject]
-        MessageService messageService { get; set; }
-       
-        private Dictionary<string, string> storageLocs = new Dictionary<string, string>() 
+        [Inject] private MessageService MessageService { get; set; }
+        [Inject] private ScanServices.ScanServicesClient ScanClient { get; set; }
+
+        private Dictionary<string, string> _storageLocations = new() 
         {
             { "FMBA", "Main Store" },
             { "FMBB", "Finished Goods" },
@@ -36,27 +36,77 @@ namespace Scan.Client.Pages
             { "FMBS", "Kardex 2" },
             { "FMBT", "Production Engineering" }
         };
-        #endregion
         
-        private bool loadingPO = false;
-        private string? tempUserInput;
-        private async Task SubmitProdOrder()
+        private bool _loadingData;
+        private string _scannerText;
+        private Input<string> _scannerInputReference;
+        private ScanData dataInTag;
+        
+        private async Task SubmitScanData()
         {
-            if (string.IsNullOrEmpty(tempUserInput))
+            if (string.IsNullOrEmpty(_scannerText))
             {
-                _ = messageService.Error("Oopsie whoopsie, Wumpus sad :(");
-                loadingPO = false;
+                _ = MessageService.Error("Oopsie whoopsie, Wumpus sad :("); //Input can not be null
+                _loadingData = false;
                 return;
             }
 
-            int index = tempUserInput.IndexOf(';');
-            string sn = tempUserInput.Substring(3, index-3);
-            string mat = tempUserInput.Substring(index + 5, tempUserInput.Length - (index - 5));
-            
-            
-            
-            loadingPO = true;
+            Tag tagData;
+
+            try
+            {
+                tagData = GenerateTag();
+            }
+            catch (InvalidOperationException)
+            {
+                _ = MessageService.Error("Oopsie whoopsie, Wumpus sad :("); //Invalid Tag Data
+                _loadingData = false;
+                return;
+            }
+
+            _loadingData = true;
             StateHasChanged();
+            
+            ScanData data;
+            try
+            {
+                data = await ScanClient.GetScanDataAsync(tagData);
+            }
+            catch (RpcException e)
+            {
+                _ = MessageService.Error(e.Message);
+                _loadingData = false;
+                return;
+            }
+
+            _loadingData = false;
+            dataInTag = data;
+        }
+        
+        private Tag GenerateTag()
+        {
+            int indexOfDelimiter = _scannerText.IndexOf(';');
+            string serialNumber = _scannerText.Substring(3, indexOfDelimiter - 3);
+            string material = _scannerText.Substring(indexOfDelimiter + 5);
+
+            Tag tagData = new()
+            {
+                Material = material, 
+                SNum = serialNumber
+            };
+
+            return tagData;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await Task.Yield();
+                await _scannerInputReference.Focus();
+            }
+            
+            await base.OnAfterRenderAsync(firstRender);
         }
     }
 }

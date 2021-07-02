@@ -8,19 +8,28 @@
                         <Text>Scan Data Matrix</Text>
                     </SpaceItem>
                     <SpaceItem>
-                        <Input @bind-Value="tempUserInput"  AllowClear="true" TValue="string?" OnPressEnter="SubmitProdOrder"/>
+                        <Input @bind-Value="_scannerText"  AllowClear="true" TValue="string?" OnPressEnter="SubmitScanData" @ref="_scannerInputReference" />
                     </SpaceItem>
+                    @if (_loadingData)
+                    {
+                        <SpaceItem>
+                            <Icon Type="@IconType.Outline.Loading" />
+                        </SpaceItem>
+                    }
                 </Space>
 
             </Card>
         </AntDesign.Col>
     </Row>
     <br />
-    <Row>
-        <AntDesign.Col Span="24">
-            <Card>
-                
-            </Card>
-        </AntDesign.Col>
-    </Row>
+    @if (dataInTag != null)
+    {
+        <Row>
+            <AntDesign.Col Span="24">
+                <Card Title="Data In Tag">
+                    <Text>Prod Order: @dataInTag.ProdOrder</Text>
+                </Card>
+            </AntDesign.Col>
+        </Row>
+    }
 </AntDesign.Pro.Layout.GridContent>
