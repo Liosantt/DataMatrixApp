@@ -5,8 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Scan.Server.Model;
 using Microsoft.EntityFrameworkCore;
-
+using Scan.Server.Services;
 using Scan.Shared;
+
 
 namespace Scan.Server
 {
@@ -28,8 +29,7 @@ namespace Scan.Server
 			services.AddServerSideBlazor();
 
 			services.AddAntDesign();
-
-			services.AddSingleton<IFileUtil, SFileUtil>();
+			services.AddGrpc();
 			
 			services.AddDbContext<Connectors1Context>(options =>
 				options.UseSqlite(Configuration.GetConnectionString("LocalDB"))
@@ -56,9 +56,11 @@ namespace Scan.Server
 			app.UseStaticFiles();
 
 			app.UseRouting();
-
+			app.UseGrpcWeb();
+			
 			app.UseEndpoints(endpoints =>
 			{
+				endpoints.MapGrpcService<ScanService>().EnableGrpcWeb();
 				endpoints.MapRazorPages();
 				endpoints.MapControllers();
 				endpoints.MapBlazorHub();

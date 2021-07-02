@@ -1,8 +1,4 @@
 @page "/"
-@using Scan.Shared;
-@inject IJSRuntime js
-@inject NavigationManager navMan
-
 <AntDesign.Pro.Layout.GridContent>
     <Row>
         <AntDesign.Col Span="24">
@@ -12,7 +8,7 @@
                         <Text>Scan Data Matrix</Text>
                     </SpaceItem>
                     <SpaceItem>
-                        <Input @bind-Value="tempUserInput"  AllowClear="true" TValue="string?" OnPressEnter="SubmitProdOrder" AutoFocus/>
+                        <Input @bind-Value="tempUserInput"  AllowClear="true" TValue="string?" OnPressEnter="SubmitProdOrder"/>
                     </SpaceItem>
                 </Space>
 

@@ -11,7 +11,7 @@ namespace Scan.Server.Model
         public string BaseUoM { get; set; }
         public long ProdOrder { get; set; }
         public int RequirementNo { get; set; }
-        public string Batch { get; set; }
+        public string? Batch { get; set; }
         public string StorageLocation { get; set; }
         public string StatusId { get; set; }
         public bool? PhantomItem { get; set; }

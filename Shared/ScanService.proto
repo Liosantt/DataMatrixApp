@@ -1,0 +1,42 @@
+syntax = "proto3";
+option csharp_namespace = "Scan.Shared";
+package ScanService;
+import "google/protobuf/timestamp.proto";
+
+service ScanServices {
+  rpc GetScanData (Tag) returns (ScanData);
+}
+
+message ScanData {
+  repeated CooisComponent components = 1;
+  int64 ProdOrder = 2;
+  Classification class = 3;
+  string Description = 4;
+}
+message CooisComponent {
+  string Material = 1;
+  float RequirementQty = 2;
+  float QtyWithdrawn = 3;
+  string BaseUoM = 4;
+  string Batch = 5;
+  string StorageLocation = 6;
+}
+message Classification {
+  string ClassMaxRatedVoltage = 1;
+  int32 ClassMinTemp = 2;
+  int32 ClassMaxTemp = 3;
+  int32 ClassMaxWaterDepth = 4;
+  int32 ClassMAWP = 5;
+  string ClassPSL = 6;
+  int32 ClassMass = 7;
+  string ClassApplicableStandard = 8;
+  bool ClassIsCEMarked = 9;
+  string ClassModifiedBy = 10;
+  string ClassValidatedBy = 11;
+  google.protobuf.Timestamp ClassValidationDate = 12;
+  bool ClassPartNoAliased = 13;
+}
+message Tag {
+  string material = 1;
+  string sNum = 2;
+}

@@ -17,9 +17,7 @@ namespace Scan.Client.Pages
         #region Services
         [Inject]
         MessageService messageService { get; set; }
-        #endregion
-
-        #region HardcodedStorageCodes
+       
         private Dictionary<string, string> storageLocs = new Dictionary<string, string>() 
         {
             { "FMBA", "Main Store" },
@@ -39,32 +37,9 @@ namespace Scan.Client.Pages
             { "FMBT", "Production Engineering" }
         };
         #endregion
-
-        #region CommentsModal
-        private bool commentsModalVisible = false;
-        private CooisComponent componentCommented;
-        private string enteredCommentText;
-        #endregion
-
-        Table<CooisComponent> pickTable { get; set; }
-
+        
         private bool loadingPO = false;
-        private bool collectedItemsVisibleInMainList = false;
-        private bool hiddenItemsVisibleInMainList = false;
         private string? tempUserInput;
-        int totalItems = 0;
-
-        List<CooisComponent> PickDataHidden = new List<CooisComponent>();
-        List<CooisComponent> PickDataSorted = new List<CooisComponent>();
-        List<CooisComponent> PickData = new List<CooisComponent>();
-        private string editingComponentID;
-
-        private void Refresh()
-        {
-            StateHasChanged();
-            pickTable.ReloadData();
-        }
-
         private async Task SubmitProdOrder()
         {
             if (string.IsNullOrEmpty(tempUserInput))
