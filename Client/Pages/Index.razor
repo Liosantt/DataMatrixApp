@@ -1,4 +1,5 @@
 @page "/"
+@using Scan.Shared
 <AntDesign.Pro.Layout.GridContent>
     <Row>
         <AntDesign.Col Span="24">
@@ -21,23 +22,24 @@
         </AntDesign.Col>
     </Row>
     <br />
-    <Row>
-        <AntDesign.Col Span="24">
-            <Card Title="Components breakdown">
-                <Table TItem="CooisComponent" DataSource="dataInTag.Components" Size="TableSize.Small" PageSize="50">
-                    <Column @bind-Field="context.Material" Title="Material">
-                        @context.Material
-                    </Column>
-                </Table>
-            </Card>
-        </AntDesign.Col>
-    </Row>
     @if (dataInTag != null)
     {
         <Row>
             <AntDesign.Col Span="24">
                 <Card Title="Data In Tag">
                     <Text>Prod Order: @dataInTag.ProdOrder</Text>
+                </Card>
+            </AntDesign.Col>
+        </Row>
+        <br />
+        <Row>
+            <AntDesign.Col Span="24">
+                <Card Title="Components breakdown">
+                    <Table TItem="CooisComponent" DataSource="@(dataInTag.Components.ToList())" Size="TableSize.Small" PageSize="50">
+                        <Column @bind-Field="@context.Material" Title="Material">
+                            @context.Material
+                        </Column>
+                    </Table>
                 </Card>
             </AntDesign.Col>
         </Row>
