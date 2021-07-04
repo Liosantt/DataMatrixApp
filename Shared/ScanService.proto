@@ -13,6 +13,7 @@ message ScanData {
   Classification class = 3;
   string Description = 4;
 }
+
 message CooisComponent {
   string Material = 1;
   float RequirementQty = 2;
@@ -21,6 +22,7 @@ message CooisComponent {
   string Batch = 5;
   string StorageLocation = 6;
 }
+
 message Classification {
   string ClassMaxRatedVoltage = 1;
   int32 ClassMinTemp = 2;
@@ -36,6 +38,7 @@ message Classification {
   google.protobuf.Timestamp ClassValidationDate = 12;
   bool ClassPartNoAliased = 13;
 }
+
 message Tag {
   string material = 1;
   string sNum = 2;

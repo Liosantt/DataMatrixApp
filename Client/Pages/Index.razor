@@ -9,7 +9,7 @@
                         <Text>Scan Data Matrix</Text>
                     </SpaceItem>
                     <SpaceItem>
-                        <Input @bind-Value="_scannerText"  AllowClear="true" TValue="string?" OnPressEnter="SubmitScanData" @ref="_scannerInputReference" />
+                        <Input @bind-Value="_scannerText"  AllowClear="true" OnPressEnter="SubmitScanData" @ref="_scannerInputReference" Style="min-width: 350px"/>
                     </SpaceItem>
                     @if (_loadingData)
                     {
@@ -27,21 +27,54 @@
         <Row>
             <AntDesign.Col Span="24">
                 <Card Title="Data In Tag">
-                    <Text>Prod Order: @dataInTag.ProdOrder</Text>
+                    <Text>Prod Order: @dataInTag.ProdOrder <br/> Material Description: @dataInTag.Description</Text>
                 </Card>
             </AntDesign.Col>
         </Row>
         <br />
-        <Row>
-            <AntDesign.Col Span="24">
+        <Row Gutter="5">
+            <AntDesign.Col Span="12">
                 <Card Title="Components breakdown">
-                    <Table TItem="CooisComponent" DataSource="@(dataInTag.Components.ToList())" Size="TableSize.Small" PageSize="50">
-                        <Column @bind-Field="@context.Material" Title="Material">
-                            @context.Material
-                        </Column>
+                    <Table DataSource="@(dataInTag.Components.ToList())" Size="TableSize.Small">
+                        <Column @bind-Field="@context.Material"/>
+                        <Column @bind-Field="@context.RequirementQty" Title="Quantity"/>
+                        <Column @bind-Field="@context.BaseUoM" Title="Unit"/>
+                        <Column @bind-Field="@context.Batch"/>
                     </Table>
+                </Card>
+            </AntDesign.Col>
+            <AntDesign.Col Span="12">
+                <Card Title="Classification">
+                    <Descriptions Bordered Size="@DescriptionsSize.Small" Column="@column">
+                        <DescriptionsItem Title="Max Voltage">@dataInTag.Class.ClassMaxRatedVoltage</DescriptionsItem>
+                        <DescriptionsItem Title="Max Temp">@dataInTag.Class.ClassMaxTemp</DescriptionsItem>
+                        <DescriptionsItem Title="Min Temp">@dataInTag.Class.ClassMinTemp</DescriptionsItem>
+                        <DescriptionsItem Title="Max Water Depth">@dataInTag.Class.ClassMaxWaterDepth</DescriptionsItem>
+                        <DescriptionsItem Title="Max Pressure">@dataInTag.Class.ClassMAWP</DescriptionsItem>
+                        <DescriptionsItem Title="Product Specification Level">@dataInTag.Class.ClassPSL</DescriptionsItem>
+                        <DescriptionsItem Title="Mass">@dataInTag.Class.ClassMass</DescriptionsItem>
+                        <DescriptionsItem Title="Applicable Standard">@dataInTag.Class.ClassApplicableStandard</DescriptionsItem>
+                        <DescriptionsItem Title="Modified By">@dataInTag.Class.ClassModifiedBy</DescriptionsItem>
+                        <DescriptionsItem Title="Validated By">@dataInTag.Class.ClassValidatedBy</DescriptionsItem>
+                        <DescriptionsItem Title="Validation Date">@dataInTag.Class.ClassValidationDate.ToDateTime().ToString("d")</DescriptionsItem>
+                        <DescriptionsItem Title="CE Marked">@dataInTag.Class.ClassIsCEMarked</DescriptionsItem>
+                        <DescriptionsItem Title="Part Num Aliased">@dataInTag.Class.ClassPartNoAliased</DescriptionsItem>
+                    </Descriptions>
                 </Card>
             </AntDesign.Col>
         </Row>
     }
 </AntDesign.Pro.Layout.GridContent>
+@code {
+
+    private Dictionary<string, int> column = new()
+    {
+        {"xxl", 3},
+        {"xl", 3},
+        {"lg", 2},
+        {"md", 2},
+        {"sm", 1},
+        {"xs", 1}
+    };
+
+}

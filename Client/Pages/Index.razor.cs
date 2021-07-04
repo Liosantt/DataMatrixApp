@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Scan.Shared;
-using System.Net.Http;
-using System.Net.Http.Json;
 using AntDesign;
-using AntDesign.TableModels;
+using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.AspNetCore.Components;
 using Tag = Scan.Shared.Tag;
@@ -59,7 +56,7 @@ namespace Scan.Client.Pages
             }
             catch (InvalidOperationException)
             {
-                _ = MessageService.Error("Oopsie whoopsie, Wumpus sad :("); //Invalid Tag Data
+                _ = MessageService.Error("Oopsie whoopsie, Wumpus Client sad :("); //Invalid Tag Data
                 _loadingData = false;
                 return;
             }
@@ -74,7 +71,7 @@ namespace Scan.Client.Pages
             }
             catch (RpcException e)
             {
-                _ = MessageService.Error(e.Message);
+                _ = MessageService.Error(e.Status.Detail);
                 _loadingData = false;
                 return;
             }

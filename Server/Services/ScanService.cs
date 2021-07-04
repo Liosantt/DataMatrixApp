@@ -22,18 +22,50 @@ namespace Scan.Server.Services
 
         public override Task<ScanData> GetScanData(Tag request, ServerCallContext context)
         {
-            long order = _dbContext.SerialNos.First(e => e.SerialNo1 == request.SNum).ProdOrder;
             ScanData response = new ScanData();
-            response.Components.AddRange(_dbContext.CooisComponents.Where(e => e.ProdOrder == order).ToProtobuf());
-            response.Description = _dbContext.MaterialMasters.First(e => e.Material == request.Material).Description;
-            response.ProdOrder = order;
-            response.Class = _dbContext.ProductClassifications.First(e => e.ClassMaterial == request.Material)
-                .ToProtobuf();
+            long order;
+            //catches
+            try
+            {
+                order = _dbContext.SerialNos.First(e => e.SerialNo1 == request.SNum).ProdOrder;
+                response.ProdOrder = order;
+            }
+            catch (InvalidOperationException)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, "Wumpus got lost on way to Production Order"));
+            }
+            
+            try
+            {
+                response.Components.AddRange(_dbContext.CooisComponents
+                    .Where(e => e.ProdOrder == order && e.StatusId.Contains("PRT")).ToProtobuf());
+            }
+            catch (InvalidOperationException){ }
+
+            try
+            {
+                response.Description = _dbContext.MaterialMasters.FirstOrDefault(e => e.Material == request.Material)
+                    ?.Description;
+            }
+            catch (ArgumentNullException)
+            {
+                response.Description = "Wumpus forgot to update material master";
+            }
+
+            try
+            {
+                response.Class = _dbContext.ProductClassifications.First(e => e.ClassMaterial == request.Material)
+                    .ToProtobuf();
+            }
+            catch (InvalidOperationException)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, "Wumpus can't find classifications for this item"));
+            }
             return Task.FromResult(response);
         }
     }
 
-    public static class Extentions
+    public static class Extensions
     {
         public static IEnumerable<CooisComponent> ToProtobuf(this IEnumerable<Scan.Server.Model.CooisComponent> self)
         {
@@ -45,7 +77,7 @@ namespace Scan.Server.Services
                     RequirementQty = Convert.ToSingle(component.RequirementQty),
                     QtyWithdrawn = Convert.ToSingle(component.QtyWithdrawn),
                     BaseUoM = component.BaseUoM,
-                    Batch = (string.IsNullOrEmpty(component.Batch) ? "Missing" : component.Batch),
+                    Batch = (string.IsNullOrEmpty(component.Batch) ? "None" : component.Batch),
                     StorageLocation = component.StorageLocation
                 };
             }
